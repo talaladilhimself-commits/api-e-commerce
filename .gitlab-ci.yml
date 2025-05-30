@@ -10,5 +10,6 @@ test_flask_app:
     - source venv/bin/activate
     - pip install --upgrade pip
     - pip install -r requirements.txt
+    - export PYTHONPATH="${PYTHONPATH}:$(pwd)"
     - pip install pytest
     - pytest tests/
