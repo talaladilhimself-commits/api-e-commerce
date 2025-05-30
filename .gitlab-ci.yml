@@ -3,10 +3,12 @@ image: python:3.10
 stages:
   - test
 
-before_script:
-  - pip install -r requirements.txt
-
 test_flask_app:
   stage: test
   script:
-    - pytest tests/
+    - python -m venv venv               # create virtual environment
+    - source venv/bin/activate         # activate virtual environment
+    - pip install --upgrade pip        # upgrade pip inside venv
+    - pip install -r requirements.txt # install dependencies inside venv
+    - pip install pytest               # make sure pytest is installed
+    - pytest tests/                   # run tests folder with pytest
