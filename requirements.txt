@@ -1,0 +1,9 @@
+flask
+connexion[swagger-ui]==2.14.2
+requests
+PyJWT==2.8.0
+flask_jwt_extended
+Flask
+pytest
+datetime
+requests

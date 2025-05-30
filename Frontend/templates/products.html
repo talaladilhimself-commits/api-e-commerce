@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center">Our Products</h1>
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{ product.name }}</h5> 
+                        <p class="card-text text-dark"><strong>Price:</strong> ${{ product.price }}</p> 
+                        <form method="POST" action="{{ url_for('cart') }}">
+                            <input type="hidden" name="product_id" value="{{ product.product_id }}">
+                            <input type="number" name="quantity" value="1" min="1">
+                            <input type="hidden" name="action" value="add_item">
+                            <button type="submit" class="btn btn-sm btn-outline-success">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

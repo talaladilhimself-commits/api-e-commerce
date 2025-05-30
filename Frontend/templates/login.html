@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <body class="text-center">
+        <div class="container">
+            <form method="post" class="form-login">
+                <h1>Login to Your Account</h1>
+                <br>
+                <input type="text" name="username" class="form-control" placeholder="Username..." required>
+                <br>
+                <input type="password" name="password" class="form-control" placeholder="Password..." required>
+                <br>
+                <div class="checkbox mb-3">
+                    <h6>Don't have an account?
+                        <a class="btn btn-sm btn-outline-warning btn-secondary" href="{{ url_for('register') }}">Create Account</a>
+                    </h6>
+                </div>
+                <button type="submit" class="btn btn-lg btn-outline-warning">Login</button>
+            </form>
+        </div>
+    </body>
+{% endblock %}

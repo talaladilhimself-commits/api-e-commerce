@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: E-commerce API
+  description: API for an e-commerce website
+  version: "1.0.0"
+servers:
+  - url: "/api"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: admin_routes._decodejwt
+  parameters:
+    CustomerId:
+      name: customer_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    ProductId:
+      name: product_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    UserId:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+      required:
+        - username
+        - password
+        - email
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    CustomerProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        name:
+          type: string
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        quantity:
+          type: integer
+    AddToCartRequest:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+          default: 1
+    Cart:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+    NewProduct:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        quantity:
+          type: integer
+
+paths:
+  /admin_routes/register:
+    post:
+      operationId: "admin_routes.register_user"
+      summary: Register a User
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Created
+  /admin_routes/login:
+    post:
+      operationId: "admin_routes.login_user"
+      summary: User Login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+  /admin_routes/users/{user_id}:
+    delete:
+      operationId: "admin_routes.delete_user"
+      summary: Delete User by ID
+      tags:
+        - User
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+        '500':
+          description: Database connection error
+        '400':
+          description: Bad request
+  /admin_routes/products/{product_id}:
+    get:
+      operationId: "admin_routes.get_product_by_id"
+      summary: Get Product by ID
+      tags:
+        - Product
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+  /admin_routes/products:
+    get:
+      operationId: "admin_routes.get_all_products"
+      summary: Get All Products
+      tags:
+        - Product
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: No products found
+        '500':
+          description: Database connection error
+  /admin_routes/cart:
+    post:
+      operationId: "admin_routes.add_item_to_cart"
+      summary: Add Item to Cart
+      tags:
+        - Cart
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddToCartRequest'
+      responses:
+        '201':
+          description: Created
+        '409':
+          description: Conflict - Product already in the cart
+    delete:
+      operationId: "admin_routes.clear_cart"
+      summary: Clear Cart
+      tags:
+        - Cart
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+    get:
+      operationId: "admin_routes.view_cart"
+      summary: View Cart
+      tags:
+        - Cart
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+  /admin_routes/cart/{product_id}:
+    post:
+      operationId: "admin_routes.remove_item_from_cart"
+      summary: Remove Item from Cart
+      tags:
+        - Cart
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+  /admin_routes:
+    post:
+      operationId: "admin_routes.add_product"
+      summary: Add a New Product
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProduct'
+      responses:
+        '201':
+          description: Created
+  /admin_routes/{product_id}:
+    delete:
+      operationId: "admin_routes.delete_product"
+      summary: Delete a Product
+      tags:
+        - Admin
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Product not found

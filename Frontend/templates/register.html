@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <body class="text-center">
+        <div class="container">
+            <form method="post" class="form-register">
+                <h1>Account | Register</h1>
+                
+            
+                <br><input type="text" name="username" class="form-control" placeholder="Username" required>
+                <br><input type="email" name="email" class="form-control" placeholder="Email Address" required>
+                <br><input type="password" name="password" class="form-control" placeholder="Password" required>
+                <br><input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+                <br>
+                <div class="checkbox mb-3">
+                    <h6>Already have an account? 
+                        <a class="btn btn-sm btn-outline-warning btn-secondary" href="{{ url_for('login') }}">Sign In</a>
+                    </h6>
+                </div>
+                
+                <button type="submit" class="btn btn-lg btn-outline-warning">Register</button>
+                
+                {% if error_message %}
+                    <div class="alert alert-danger mt-3">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </body>
+{% endblock %}
