@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime, timedelta
 from config import CONFIG
 from flask import Flask, render_template, request, redirect, flash, url_for, session
-from notes_shim import (
+from .notes_shim import (
     register_user,
     login_user,
     delete_user,
